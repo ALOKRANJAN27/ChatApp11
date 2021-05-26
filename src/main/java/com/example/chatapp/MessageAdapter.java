@@ -428,7 +428,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private void deleteSentMessage(final int position ,final  MessageViewHolder holder)
     {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        rootRef.child("Message")
+        rootRef.child("Messages")
                 .child(userMessagesList.get(position ).getFrom())
                 .child(userMessagesList.get(position).getTo())
                 .child(userMessagesList .get(position).getMessageID())
@@ -454,8 +454,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private void deleteReceiveMessage(final int position ,final  MessageViewHolder holder)
     {
         DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        rootRef.child("Message").
-                child(userMessagesList.get(position ).getTo())
+        rootRef.child("Messages")
+                .child(userMessagesList.get(position ).getTo())
                 .child(userMessagesList.get(position).getFrom())
                 .child(userMessagesList .get(position).getMessageID())
                 .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -483,7 +483,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private void deleteMessageForEveryOne(final int position ,final  MessageViewHolder holder)
     {
         final DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        rootRef.child("Message").
+        rootRef.child("Messages").
                 child(userMessagesList.get(position ).getTo())
                 .child(userMessagesList.get(position).getFrom())
                 .child(userMessagesList .get(position).getMessageID())
@@ -493,7 +493,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             {
                 if (task.isSuccessful())
                 {
-                    rootRef.child("Message").
+                    rootRef.child("Messages").
                             child(userMessagesList.get(position ).getFrom())
                             .child(userMessagesList.get(position).getTo())
                             .child(userMessagesList .get(position).getMessageID())
