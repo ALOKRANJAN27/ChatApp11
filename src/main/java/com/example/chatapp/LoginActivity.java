@@ -1,6 +1,8 @@
 package com.example.chatapp;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +32,7 @@ public class LoginActivity extends AppCompatActivity
     private EditText UserEmail,UserPassword;
     private TextView NeedNewAccountLink,ForgetPasswordLink;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,13 +43,66 @@ public class LoginActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
 
 
+
+
         InitializeFields();
+
+       ForgetPasswordLink.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               final EditText resetMail =new EditText(view.getContext());
+               AlertDialog.Builder passwordResetDialog =new AlertDialog.Builder(view.getContext(),R.style.Theme_AppCompat_Light_Dialog_Alert);
+               passwordResetDialog.setTitle("Reset Password ?");
+               passwordResetDialog.setMessage("Enter your Email To Receive Reset Link");
+               passwordResetDialog.setView(resetMail);
+
+
+               passwordResetDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialogInterface, int i) {
+                       //Extract the email and send reset link
+                       String mail = resetMail.getText().toString();
+
+                       if(TextUtils.isEmpty(mail)){
+                           Toast.makeText(LoginActivity.this, "Email Address Is Required To Reset Password", Toast.LENGTH_SHORT).show();
+                           return;
+                       }
+
+
+                       mAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                           @Override
+                           public void onSuccess(Void unused) {
+                               Toast.makeText(LoginActivity.this, "Reset Link Sent To Your Email.", Toast.LENGTH_SHORT).show();
+
+                           }
+                       }).addOnFailureListener(new OnFailureListener() {
+                           @Override
+                           public void onFailure(@NonNull Exception e) {
+                               Toast.makeText(LoginActivity.this, "Error! Reset Link is Not Sent" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                           }
+                       });
+                   }
+
+                   });
+               passwordResetDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialogInterface, int i) {
+                       // Close the dialog
+                   }
+               });
+               passwordResetDialog.create().show();
+           }
+       });
+
+
+
+
 
         NeedNewAccountLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-               SendUserToRegisterActivity();
+                SendUserToRegisterActivity();
             }
         });
 
@@ -62,8 +120,8 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-             Intent phoneloginIntent = new Intent(LoginActivity.this , PhoneLoginActivity.class);
-             startActivity(phoneloginIntent);
+                Intent phoneloginIntent = new Intent(LoginActivity.this , PhoneLoginActivity.class);
+                startActivity(phoneloginIntent);
             }
         });
 

@@ -51,6 +51,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity
 {
+
     private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID;
 
     private TextView userName, userLastSeen;
@@ -108,6 +109,12 @@ public class ChatActivity extends AppCompatActivity
 
 
         IntializeControllers();
+
+
+
+
+
+
 
 
 
